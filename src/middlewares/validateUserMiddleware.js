@@ -1,4 +1,4 @@
-import signupSchema from "../models/SignupSchema.js";
+import userSchema from "../models/userSchema";
 
 export default function signupValidate(req, res, next) {
   const { name, email, password, confirmPassword } = req.body;
@@ -10,7 +10,7 @@ export default function signupValidate(req, res, next) {
     confirmPassword,
   };
 
-  const { error } = signupSchema.validate(newUser, { abortEarly: false });
+  const { error } = userSchema.validate(newUser, { abortEarly: false });
 
   if (error) {
     const errors = error.details.map((detail) => detail.message);
