@@ -1,9 +1,11 @@
 import { Router } from "express";
-import { createUser } from "../controllers/userController.js";
-import userValidate from "../middlewares/validateUserMiddleware.js";
+import { signin, signup } from "../controllers/userController.js";
+import signinValidate from "../middlewares/signinValidateMiddleware.js";
+import signupValidate from "../middlewares/signupValidateMiddleware.js";
 
 const router = Router();
 
-router.post("/signup", userValidate, createUser);
+router.post("/signup", signupValidate, signup);
+router.get("/signin", signinValidate, signin);
 
 export default router;

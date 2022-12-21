@@ -1,7 +1,7 @@
 import { connection } from "../database/db.js";
 import userSchema from "../models/userSchema.js";
 
-export default async function userValidate(req, res, next) {
+export default async function signupValidate(req, res, next) {
   const { name, email, password, confirmPassword } = req.body;
 
   const newUser = {
@@ -31,5 +31,6 @@ export default async function userValidate(req, res, next) {
     console.log(erro);
     res.sendStatus(500);
   }
+
   next();
 }
