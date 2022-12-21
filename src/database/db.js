@@ -6,7 +6,7 @@ export const connection = new Pool({
   host: "localhost",
   port: 5432,
   user: "postgres",
-  password: "root",
-  database: "tastecamp",
+  password: "qwe123",
+  database: "shortly",
 });
 

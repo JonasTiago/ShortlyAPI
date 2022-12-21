@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { signup } from "../controllers/authController.js";
-import signupValidate from "../middlewares/authSignupMiddleware.js";
+import { createUser } from "../controllers/userController.js";
+import userValidate from "../middlewares/validateUserMiddleware.js";
 
 const router = Router();
 
-router.post("/signup", signupValidate, signup);
+router.post("/signup", userValidate, createUser);
 
 export default router;
