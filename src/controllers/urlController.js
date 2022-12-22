@@ -8,9 +8,9 @@ export async function createUrlShort(req, res) {
   try {
     const shortly = nanoid(5);
 
-    await connection.query(
-      `INSERT INTO urls (url, "userId", shortly) VALUES ($1, $2, $3);`,
-      [url, userId, shortly]
+    const u = await connection.query(
+      `INSERT INTO urls (url, "userId", shortly, visualizations) VALUES ($1, $2, $3, $4);`,
+      [url, userId, shortly, 0]
     );
 
     res.status(201).send({ shortly });
@@ -31,6 +31,21 @@ export async function findUrlId(req, res) {
     if (!url.rowCount) return res.sendStatus(404);
 
     res.status(200).send(url.rows[0]);
+  } catch (errr) {
+    res.status(500).send(errr.message);
+  }
+}
+
+export async function shortUrl(req, res) {
+  const url = res.locals.url;
+
+  try {
+     await connection.query(
+      `UPDATE urls SET visualizations = $1 WHERE urls.id = $2;`,
+      [url.visualizations+1, url.id]
+    );
+
+    res.status(200).redirect(url.url);
   } catch (errr) {
     res.status(500).send(errr.message);
   }
