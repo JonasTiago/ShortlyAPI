@@ -1,12 +1,13 @@
 import { connection } from "../database/db.js";
 import signinSchema from "../models/signinSchema.js";
+import bcrypt from "bcrypt";
 
 export default async function signinValidate(req, res, next) {
-  const {  email, password } = req.body;
+  const { email, password } = req.body;
 
   const user = {
     email,
-    password
+    password,
   };
 
   const { error } = signinSchema.validate(user, { abortEarly: false });
@@ -22,15 +23,16 @@ export default async function signinValidate(req, res, next) {
       [email]
     );
 
-    if(!userValid.rowCount) return res.sendStatus(401);
+    if (!userValid.rowCount) return res.sendStatus(401);
 
-    if(!(userValid.rows[0].password === password)) return res.sendStatus(401);
-    
-    res.locals.user = user;
-  } catch (erro) {
-    console.log(erro);
-    res.sendStatus(500);
+    const passwordValid = bcrypt.compareSync(password, userValid.rows[0].password);
+
+    if (!passwordValid) return res.sendStatus(401);
+
+    res.locals.user = userValid.rows[0];
+    next();
+  } catch (err) {
+    console.log(err);
+    res.status(500).send(err.message);
   }
-
-  next();
 }

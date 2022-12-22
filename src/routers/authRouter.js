@@ -6,6 +6,6 @@ import signupValidate from "../middlewares/signupValidateMiddleware.js";
 const router = Router();
 
 router.post("/signup", signupValidate, signup);
-router.get("/signin", signinValidate, signin);
+router.post("/signin", signinValidate, signin);
 
 export default router;
