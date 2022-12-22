@@ -34,8 +34,6 @@ export async function signin(req, res) {
 export async function myShortlys(req, res) {
   const user = res.locals.user;
 
-  console.log(user.id);
-
   try {
     const myShorts = await connection.query(
       `SELECT u.id, u.name, 
@@ -47,6 +45,19 @@ export async function myShortlys(req, res) {
     );
 
     res.send(myShorts.rows[0]);
+  } catch (errr) {
+    res.status(500).send(errr.message);
+  }
+}
+
+export async function rankingVisualization(req, res) {
+  try {
+    const ranking = await connection.query(`SELECT u.id, u.name, 
+    COUNT (l.shortly) AS "linksCount",
+    SUM (COALESCE (l.visualizations, 0)) AS "visitCount"
+    FROM users u LEFT JOIN urls l ON u.id = l."userId" GROUP BY u.id ORDER BY "visitCount" DESC, "linksCount" DESC LIMIT 10;`);
+
+    res.status(200).send(ranking.rows)
   } catch (errr) {
     res.status(500).send(errr.message);
   }
