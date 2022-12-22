@@ -40,12 +40,23 @@ export async function shortUrl(req, res) {
   const url = res.locals.url;
 
   try {
-     await connection.query(
+    await connection.query(
       `UPDATE urls SET visualizations = $1 WHERE urls.id = $2;`,
-      [url.visualizations+1, url.id]
+      [url.visualizations + 1, url.id]
     );
 
     res.status(200).redirect(url.url);
+  } catch (errr) {
+    res.status(500).send(errr.message);
+  }
+}
+
+export async function deleteUrl(req, res) {
+  const urlId = res.locals.shortUrlId;
+
+  try {
+    connection.query(`DELETE FROM urls WHERE id = $1`, [urlId]);
+    res.sendStatus(204);
   } catch (errr) {
     res.status(500).send(errr.message);
   }
