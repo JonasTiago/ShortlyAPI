@@ -5,7 +5,6 @@ import { connection } from "../database/db.js";
 dotenv.config();
 
 export default async function shortUrlValide(req, res, next) {
-  const shortUrlId = req.params.id;
   const authorization = req.headers.authorization;
   const token = authorization?.replace("Bearer ", "");
 
@@ -14,13 +13,6 @@ export default async function shortUrlValide(req, res, next) {
   }
 
   try {
-    const shortlyValid = await connection.query(
-      `SELECT * FROM urls WHERE id = $1`,
-      [parseInt(shortUrlId)]
-    );
-
-    if (!shortlyValid.rowCount) return res.sendStatus(404);
-
     jwt.verify(token, process.env.SECRET_JWT, async (error, decoded) => {
       if (error) return res.status(401).send({ message: "Token invalid!" });
 
@@ -29,12 +21,9 @@ export default async function shortUrlValide(req, res, next) {
         [decoded.id]
       );
 
-      if (!userValid.rowCount) return res.sendStatus(401);
+      if (!userValid.rowCount) return res.sendStatus(404);
 
-      if (shortlyValid.rows[0].userId !== userValid.rows[0].id)
-        return res.sendStatus(401);
-
-      res.locals.shortUrlId = shortlyValid.rows[0].id;
+      res.locals.user = userValid.rows[0];
 
       next();
     });
