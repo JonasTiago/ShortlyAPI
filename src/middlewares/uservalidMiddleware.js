@@ -23,7 +23,7 @@ export default async function shortUrlValide(req, res, next) {
 
       if (!userValid.rowCount) return res.sendStatus(404);
 
-      res.locals.user = userValid.rows[0];
+      res.locals.userId = userValid.rows[0].id;
 
       next();
     });
